@@ -382,11 +382,11 @@ function checkAnswer() {
     const average = (sum/scores.length).toFixed(1);
     document.getElementById('score').textContent = `Note moyenne : ${average} / 20`;
 
-    if(score===20){
-        document.getElementById('result').textContent = '✅ Correct ! Bonne réponse : "${correctAnswers.join('" ou "')}"`;
-    } else {
-        document.getElementById('result').textContent = `❌ Faux. Bonne réponse : "${correctAnswers.join('" ou "')}"`;
-    }
+    if (score === 20) {
+    document.getElementById('result').textContent = `✅ Correct ! Bonne réponse : "${correctAnswers.join('" ou "')}"`;
+} else {
+    document.getElementById('result').textContent = `❌ Faux. Bonne réponse : "${correctAnswers.join('" ou "')}"`;
+}
 
     if(currentItem.type==='mot' && currentItem.genre){
         document.getElementById('info').textContent = `Genre : ${currentItem.genre==='m'?'masculin':currentItem.genre==='f'?'féminin':'neutre'}`;
@@ -414,4 +414,5 @@ nextQuestion();
 
 </body>
 </html>
+
 
