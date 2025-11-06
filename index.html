@@ -383,7 +383,7 @@ function checkAnswer() {
     document.getElementById('score').textContent = `Note moyenne : ${average} / 20`;
 
     if(score===20){
-        document.getElementById('result').textContent = '✅ Correct !';
+        document.getElementById('result').textContent = '✅ Correct ! Bonne réponse : "${correctAnswers.join('" ou "')}"`;
     } else {
         document.getElementById('result').textContent = `❌ Faux. Bonne réponse : "${correctAnswers.join('" ou "')}"`;
     }
@@ -414,3 +414,4 @@ nextQuestion();
 
 </body>
 </html>
+
