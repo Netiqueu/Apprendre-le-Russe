@@ -8,4 +8,4 @@ Une note sur 20 est donnée à chaque réponse et la moyen est calculé.
 Futur :
 - La prochaine étape sera de rajouter un bouton audio qui lie le mot russe demandé.
 
-[➡️ Ouvrir](https://mongequent-max.github.io/Apprendre-le-Russe/)
+[➡️ Ouvrir](https://netiqueu.github.io/Apprendre-le-Russe/)
