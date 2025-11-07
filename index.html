@@ -6,93 +6,20 @@
 <title>Apprentissage du russe</title>
 <style>
 /* ======== Base ======== */
-body {
-    font-family: Arial, sans-serif; 
-    text-align: center;
-    margin: 0;
-    padding: 20px;
-    background: #f0f4f8;
-    color: #222;
-}
-
-h1 {
-    color: #2c3e50;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-/* ======== Score ======== */
-#score {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    margin-bottom: 20px;
-    color: #34495e;
-}
-
-/* ======== Lettre/Mot ======== */
-#letter {
-    font-size: clamp(4rem, 10vw, 8rem);
-    margin-bottom: 20px;
-    background: #fff;
-    display: inline-block;
-    padding: 1rem 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    min-width: 120px;
-}
-
-/* ======== Input ======== */
-input {
-    font-size: clamp(1rem, 4vw, 1.5rem);
-    padding: 0.8rem 1rem;
-    width: 60%;
-    max-width: 400px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    transition: border 0.3s;
-}
-
-input:focus {
-    border-color: #3498db;
-    outline: none;
-}
-
-/* ======== Bouton ======== */
-button {
-    font-size: clamp(0.8rem, 3vw, 1.2rem);
-    padding: 0.8rem 2rem;
-    margin: 10px 5px;
-    border: none;
-    border-radius: 8px;
-    background-color: #3498db;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-}
-
-button:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-}
-
-/* ======== Feedback ======== */
-#result {
-    margin-top: 20px;
-    font-size: clamp(1rem, 3vw, 1.5rem);
-    font-weight: 500;
-}
-
-#info {
-    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-    margin-top: 10px;
-    color: #555;
-}
-
-/* ======== Mode sombre ======== */
+body { font-family: Arial, sans-serif; text-align: center; margin:0; padding:20px; background:#f0f4f8; color:#222; }
+h1 { color:#2c3e50; font-weight:700; margin-bottom:20px; }
+#score { font-size:clamp(1.5rem,4vw,2.5rem); margin-bottom:20px; color:#34495e; }
+#letter { font-size:clamp(4rem,10vw,8rem); margin-bottom:20px; background:#fff; display:inline-block; padding:1rem 2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); min-width:120px; }
+input { font-size:clamp(1rem,4vw,1.5rem); padding:0.8rem 1rem; width:60%; max-width:400px; border:2px solid #ccc; border-radius:8px; box-sizing:border-box; transition:border 0.3s; }
+input:focus { border-color:#3498db; outline:none; }
+button { font-size:clamp(0.8rem,3vw,1.2rem); padding:0.8rem 2rem; margin:10px 5px; border:none; border-radius:8px; background-color:#3498db; color:#fff; cursor:pointer; transition:background 0.3s, transform 0.2s; }
+button:hover { background-color:#2980b9; transform:translateY(-2px); }
+#result { margin-top:20px; font-size:clamp(1rem,3vw,1.5rem); font-weight:500; }
+#info { font-size:clamp(0.9rem,2.5vw,1.2rem); margin-top:10px; color:#555; }
 @media (prefers-color-scheme: dark) {
-    body { background: #1e1e1e; color: #eee; }
-    #letter { background: #2c2c2c; color: #fff; }
-    input, button { background: #333; color: #fff; border-color: #555; }
+    body { background:#1e1e1e; color:#eee; }
+    #letter { background:#2c2c2c; color:#fff; }
+    input, button { background:#333; color:#fff; border-color:#555; }
 }
 </style>
 </head>
@@ -102,238 +29,15 @@ button:hover {
 <div id="score">Note moyenne : 0 / 20</div>
 <div id="letter"></div>
 <input type="text" id="answer" placeholder="Écris la translittération ici">
-<div>
-    <button id="actionButton">Valider</button>
-</div>
+<div><button id="actionButton">Valider</button></div>
 <div id="result"></div>
 <div id="info"></div>
 
 <script>
-// ========================
-// Base de données russe
-// ========================
-const russianLearning = [
-    { cyr: 'А', trans: ['a'], type: 'lettre' },
-    { cyr: 'Б', trans: ['b'], type: 'lettre' },
-    { cyr: 'В', trans: ['v'], type: 'lettre' },
-    { cyr: 'Г', trans: ['g'], type: 'lettre' },
-    { cyr: 'Д', trans: ['d'], type: 'lettre' },
-    { cyr: 'Е', trans: ['yé','ïe'], type: 'lettre' },
-    { cyr: 'Ё', trans: ['yo','ïo'], type: 'lettre' },
-    { cyr: 'Ж', trans: ['j'], type: 'lettre' },
-    { cyr: 'З', trans: ['z'], type: 'lettre' },
-    { cyr: 'И', trans: ['i'], type: 'lettre' },
-    { cyr: 'Й', trans: ['ï'], type: 'lettre' },
-    { cyr: 'К', trans: ['k'], type: 'lettre' },
-    { cyr: 'Л', trans: ['l'], type: 'lettre' },
-    { cyr: 'М', trans: ['m'], type: 'lettre' },
-    { cyr: 'Н', trans: ['n'], type: 'lettre' },
-    { cyr: 'О', trans: ['o'], type: 'lettre' },
-    { cyr: 'П', trans: ['p'], type: 'lettre' },
-    { cyr: 'Р', trans: ['r'], type: 'lettre' },
-    { cyr: 'С', trans: ['s'], type: 'lettre' },
-    { cyr: 'Т', trans: ['t'], type: 'lettre' },
-    { cyr: 'У', trans: ['ou'], type: 'lettre' },
-    { cyr: 'Ф', trans: ['f'], type: 'lettre' },
-    { cyr: 'Х', trans: ['kh','h'], type: 'lettre' },
-    { cyr: 'Ц', trans: ['ts'], type: 'lettre' },
-    { cyr: 'Ч', trans: ['tch'], type: 'lettre' },
-    { cyr: 'Ш', trans: ['ch'], type: 'lettre' },
-    { cyr: 'Щ', trans: ['chtch'], type: 'lettre' },
-    { cyr: 'Ъ', trans: ['"'], type: 'lettre' },
-    { cyr: 'Ы', trans: ['y'], type: 'lettre' },
-    { cyr: 'Ь', trans: ["'"], type: 'lettre' },
-    { cyr: 'Э', trans: ['e'], type: 'lettre' },
-    { cyr: 'Ю', trans: ['you','ïou'], type: 'lettre' },
-    { cyr: 'Я', trans: ['ya','ïa'], type: 'lettre' },
-
-    ///////////////////////////////////////////
-
-    { cyr: 'папа', trans: ['papa', 'papa'], type: 'mot', genre: 'm' },
-    { cyr: 'дама', trans: ['dama', 'dame'], type: 'mot', genre: 'f' },
-    { cyr: 'драма', trans: ['drama', 'drame'], type: 'mot', genre: 'f' },
-    { cyr: 'доктор', trans: ['doktar', 'docteur'], type: 'mot', genre: 'm' },
-    { cyr: 'азот', trans: ['azot', 'azote'], type: 'mot', genre: 'm' },
-    { cyr: 'адрес', trans: ['adres', 'adresse'], type: 'mot', genre: 'm' },
-    { cyr: 'акробат', trans: ['akrabat', 'acrobate'], type: 'mot', genre: 'm' },
-    { cyr: 'ананас', trans: ['ananas', 'ananas'], type: 'mot', genre: 'm' },
-    { cyr: 'аноним', trans: ['ananim', 'anonyme'], type: 'mot', genre: 'm' },
-    { cyr: 'самовар', trans: ['samavar', 'samovar'], type: 'mot', genre: 'm' },
-    { cyr: 'америка', trans: ['amerika', 'amérique'], type: 'mot', genre: 'f' },
-    { cyr: 'паспорт', trans: ['paspart', 'passeport'], type: 'mot', genre: 'm' },
-    { cyr: 'александр', trans: ['aleksandr', 'alexandre'], type: 'mot', genre: 'm' },
-    { cyr: 'бар', trans: ['bar', 'bar'], type: 'mot', genre: 'm' },
-    { cyr: 'миллион', trans: ['million', 'million'], type: 'mot', genre: 'm' },
-    { cyr: 'елена', trans: ['elena', 'elena'], type: 'mot', genre: 'f' },
-    { cyr: 'лампа', trans: ['lampa', 'lampe'], type: 'mot', genre: 'f' },
-    { cyr: 'кредит', trans: ['kredit', 'crédit'], type: 'mot', genre: 'm' },
-    { cyr: 'космос', trans: ['kosmos', 'cosmos'], type: 'mot', genre: 'm' },
-    { cyr: 'иванов', trans: ['ivanov', 'ivanov'], type: 'mot', genre: 'm' },
-    { cyr: 'луна', trans: ['louna', 'lune'], type: 'mot', genre: 'f' },
-    { cyr: 'аквариум', trans: ['akvarium', 'aquarium'], type: 'mot', genre: 'm' },
-    { cyr: 'атом', trans: ['atom', 'atome'], type: 'mot', genre: 'm' },
-    { cyr: 'жест', trans: ['jest', 'geste'], type: 'mot', genre: 'm' },
-    { cyr: 'жаргон', trans: ['jargon', 'jargon'], type: 'mot', genre: 'm' },
-    { cyr: 'гараж', trans: ['garaj', 'garage'], type: 'mot', genre: 'm' },
-    { cyr: 'фраза', trans: ['fraza', 'phrase'], type: 'mot', genre: 'f' },
-    { cyr: 'форма', trans: ['forma', 'forme'], type: 'mot', genre: 'f' },
-    { cyr: 'кофе', trans: ['kofe', 'café'], type: 'mot', genre: 'm' },
-    { cyr: 'париж', trans: ['parij', 'paris'], type: 'mot', genre: 'm' },
-    { cyr: 'актёр', trans: ['aktior', 'acteur'], type: 'mot', genre: 'm' },
-    { cyr: 'амфитеатр', trans: ['amfiteatr', 'amphithéâtre'], type: 'mot', genre: 'm' },
-    { cyr: 'чек', trans: ['tchek', 'chèque'], type: 'mot', genre: 'm' },
-    { cyr: 'физика', trans: ['fizika', 'physique'], type: 'mot', genre: 'f' },
-    { cyr: 'чемпион', trans: ['tchempion', 'champion'], type: 'mot', genre: 'm' },
-    { cyr: 'ключ', trans: ['klioutch', 'clé'], type: 'mot', genre: 'm' },
-    { cyr: 'шанс', trans: ['chans', 'chance'], type: 'mot', genre: 'm' },
-    { cyr: 'шасси', trans: ['chassi', 'châssis'], type: 'mot', genre: 'n' },
-    { cyr: 'чай', trans: ['tchaï', 'thé'], type: 'mot', genre: 'm' },
-    { cyr: 'шофёр', trans: ['chofior', 'chauffeur'], type: 'mot', genre: 'm' },
-    { cyr: 'генерал', trans: ['général', 'général'], type: 'mot', genre: 'm' },
-    { cyr: 'телефон', trans: ['telefon', 'téléphone'], type: 'mot', genre: 'm' },
-    { cyr: 'медицина', trans: ['meditsina', 'médecine'], type: 'mot', genre: 'f' },
-    { cyr: 'цирк', trans: ['tsirk', 'cirque'], type: 'mot', genre: 'm' },
-    { cyr: 'роза', trans: ['roza', 'rose'], type: 'mot', genre: 'f' },
-    { cyr: 'бригада', trans: ['brigada', 'brigade'], type: 'mot', genre: 'f' },
-    { cyr: 'консул', trans: ['konsul', 'consul'], type: 'mot', genre: 'm' },
-    { cyr: 'какао', trans: ['kakao', 'cacao'], type: 'mot', genre: 'n' },
-    { cyr: 'музей', trans: ['muzéi', 'musée'], type: 'mot', genre: 'm' },
-    { cyr: 'почта', trans: ['potchta', 'poste'], type: 'mot', genre: 'f' },
-    { cyr: 'я', trans: ['ya', 'je'], type: 'mot', genre: '' },
-    { cyr: 'аллея', trans: ['alléïa', 'allée'], type: 'mot', genre: 'f' },
-    { cyr: 'франция', trans: ['frantsiya', 'france'], type: 'mot', genre: 'f' },
-    { cyr: 'альманах', trans: ['almanakh', 'almanach'], type: 'mot', genre: 'm' },
-    { cyr: 'автомобиль', trans: ['avtomobil', 'automobile'], type: 'mot', genre: 'm' },
-    { cyr: 'профессор', trans: ['professor', 'professeur'], type: 'mot', genre: 'm' },
-    { cyr: 'хаос', trans: ['khaos', 'chaos'], type: 'mot', genre: 'm' },
-    { cyr: 'механика', trans: ['mekhanika', 'mécanique'], type: 'mot', genre: 'f' },
-    { cyr: 'хор', trans: ['khor', 'chœur'], type: 'mot', genre: 'm' },
-    { cyr: 'хронометр', trans: ['khronometr', 'chronomètre'], type: 'mot', genre: 'm' },
-    { cyr: 'фотография', trans: ['fotografiya', 'photographie'], type: 'mot', genre: 'f' },
-    { cyr: 'офицер', trans: ['ofitser', 'officier'], type: 'mot', genre: 'm' },
-    { cyr: 'концерт', trans: ['kontsert', 'concert'], type: 'mot', genre: 'm' },
-    { cyr: 'шампанское', trans: ['champanskoye', 'champagne'], type: 'mot', genre: 'n' },
-    { cyr: 'россия', trans: ['rossiya', 'russie'], type: 'mot', genre: 'f' },
-    { cyr: 'минута', trans: ['minuta', 'minute'], type: 'mot', genre: 'f' },
-    { cyr: 'багаж', trans: ['bagaj', 'bagage'], type: 'mot', genre: 'm' },
-    { cyr: 'товарищ', trans: ['tovarichtch', 'camarade'], type: 'mot', genre: 'm' },
-    { cyr: 'вагон', trans: ['vagon', 'wagon'], type: 'mot', genre: 'm' },
-    { cyr: 'характер', trans: ['kharakter', 'caractère'], type: 'mot', genre: 'm' },
-    { cyr: 'вы', trans: ['vy', 'vous'], type: 'mot', genre: '' },
-    { cyr: 'крым', trans: ['krym', 'crimée'], type: 'mot', genre: 'm' },
-    { cyr: 'газ', trans: ['gaz', 'gaz'], type: 'mot', genre: 'm' },
-    { cyr: 'костюм', trans: ['kostyum', 'costume'], type: 'mot', genre: 'm' },
-    { cyr: 'журнал', trans: ['zhurnal', 'journal'], type: 'mot', genre: 'm' },
-    { cyr: 'пианист', trans: ['pianist', 'pianiste'], type: 'mot', genre: 'm' },
-    { cyr: 'рубль', trans: ['roubl', 'rouble'], type: 'mot', genre: 'm' },
-    { cyr: 'банан', trans: ['banan', 'banane'], type: 'mot', genre: 'm' },
-    { cyr: 'ты', trans: ['ty', 'tu'], type: 'mot', genre: '' },
-    { cyr: 'поэт', trans: ['poet', 'poète'], type: 'mot', genre: 'm' },
-    { cyr: 'балалайка', trans: ['balalaïka', 'balalaïka'], type: 'mot', genre: 'f' },
-    { cyr: 'акцент', trans: ['aktsent', 'accent'], type: 'mot', genre: 'm' },
-    { cyr: 'телеграф', trans: ['telegraf', 'télégraphe'], type: 'mot', genre: 'm' },
-    { cyr: 'крокодил', trans: ['krokodil', 'crocodile'], type: 'mot', genre: 'm' },
-    { cyr: 'инженер', trans: ['inzhener', 'ingénieur'], type: 'mot', genre: 'm' },
-    { cyr: 'эмигрант', trans: ['emigrant', 'émigrant'], type: 'mot', genre: 'm' },
-    { cyr: 'секретарь', trans: ['sekretar', 'secrétaire'], type: 'mot', genre: 'm' },
-    { cyr: 'академия', trans: ['akademiya', 'académie'], type: 'mot', genre: 'f' },
-    { cyr: 'оркестр', trans: ['orkestr', 'orchestre'], type: 'mot', genre: 'm' },
-    { cyr: 'коридор', trans: ['koridor', 'corridor'], type: 'mot', genre: 'm' },
-    { cyr: 'опера', trans: ['opera', 'opéra'], type: 'mot', genre: 'f' },
-    { cyr: 'армия', trans: ['armiya', 'armée'], type: 'mot', genre: 'f' },
-    { cyr: 'объём', trans: ['ob-yom', 'volume'], type: 'mot', genre: 'm' },
-    { cyr: 'урал', trans: ['oural', 'oural'], type: 'mot', genre: 'm' },
-    { cyr: 'спутник', trans: ['spoutnik', 'spoutnik'], type: 'mot', genre: 'm' },
-
-    //////////////////////////////////////////////////////
-
-    // Phrases courantes
-    { cyr: 'здравствуйте', trans: ['zdravstvuite','bonjour'], type: 'phrase' },
-    { cyr: 'как дела?', trans: ['kak dela?','comment ça va ?'], type: 'phrase' },
-    { cyr: 'спасибо', trans: ['spasiba','merci'], type: 'phrase' },
-    { cyr: 'до свидания', trans: ['do svidania','au revoir'], type: 'phrase' },
-
-    //////////////////////////////////////////////////////
-
-    { cyr: 'здравствуйте', trans: ['zdravstvuite','bonjour'], type: 'phrase' },
-    { cyr: 'как дела?', trans: ['kak dela?','comment ça va ?'], type: 'phrase' },
-    { cyr: 'хорошо', trans: ['khorosho','bien'], type: 'phrase' },
-    { cyr: 'куда вы идёте?', trans: ['kuda vy idyote?','ou allez-vous'], type: 'phrase' },
-    { cyr: 'я иду домой, а вы?', trans: ['ya idu domoy, a vy?','je vais à la maison, vous aussi ?'], type: 'phrase' },
-    { cyr: 'нет, в театр', trans: ['net, v teatr','non, au théâtre'], type: 'phrase' },
-    { cyr: 'а какой?', trans: ['a kakoy?','et lequel ?'], type: 'phrase' },
-    { cyr: 'мы идём в Большой', trans: ['my idem v Bolshoy','nous allons au Bolchoï'], type: 'phrase' },
-    { cyr: 'до свидания', trans: ['do svidania','au revoir'], type: 'phrase' },
-    { cyr: 'алло, это Борис?', trans: ['allo, eto Boris?','allo, c\'est Boris ?'], type: 'phrase' },
-    { cyr: 'да, это я. кто у телефона?', trans: ['da, eto ya. kto u telefona?','oui, c\'est moi. qui est à l\'appareil ?'], type: 'phrase' },
-    { cyr: 'это я, Вадим', trans: ['eto ya, Vadim','c\'est moi, Vadim'], type: 'phrase' },
-    { cyr: 'а! Вадим?', trans: ['a! Vadim?','ah! Vadim ?'], type: 'phrase' },
-    { cyr: 'здравствуйте, мой друг', trans: ['zdravstvuite, moy drug','bonjour, mon ami'], type: 'phrase' },
-    { cyr: 'здравствуй, старший брат', trans: ['zdravstvuy, starshiy brat','bonjour, vieux frère'], type: 'phrase' },
-    { cyr: 'как я рад!', trans: ['kak ya rad!','comme je suis content'], type: 'phrase' },
-    { cyr: 'я тоже рад', trans: ['ya tozhe rad','moi aussi, je suis content'], type: 'phrase' },
-    { cyr: 'где ты?', trans: ['gde ty?','où es-tu ?'], type: 'phrase' },
-    { cyr: 'у меня дома', trans: ['u menya doma','chez moi'], type: 'phrase' },
-    { cyr: 'заходи ко мне', trans: ['zakhodi ko mne','passe me voir'], type: 'phrase' },
-    { cyr: 'ладно, до встречи', trans: ['ladno, do vstrechi','d\'accord, à la prochaine'], type: 'phrase' },
-    { cyr: 'извините, что вы сказали?', trans: ['izvinite, chto vy skazali?','pardon, que dites-vous ?'], type: 'phrase' },
-    { cyr: 'вы русские?', trans: ['vy russkiye?','vous êtes russe ?'], type: 'phrase' },
-    { cyr: 'нет, я испанец', trans: ['net, ya ispanyets','non, je suis espagnol'], type: 'phrase' },
-    { cyr: 'вы хорошо говорите по-русски', trans: ['vy khorosho govorite po-russki','vous parlez bien russe'], type: 'phrase' },
-    { cyr: 'спасибо, вы очень любезны', trans: ['spasibo, vy ochen lyubezny','merci, vous êtes très aimable'], type: 'phrase' },
-    { cyr: 'а она говорит по-русски?', trans: ['a ona govorit po-russki?','et elle, elle parle russe ?'], type: 'phrase' },
-    { cyr: 'конечно, она русская', trans: ['konechno, ona russkaya','bien sûr, elle est russe'], type: 'phrase' },
-    { cyr: 'давайте говорить по-русски', trans: ['davaite govorit po-russki','parlons russe'], type: 'phrase' },
-    { cyr: 'с удовольствием, мне очень нравится русский язык', trans: ['s udovolstviem, mne ochen nravitsya russkiy yazyk','avec plaisir, j\'aime beaucoup la langue russe'], type: 'phrase' },
-    { cyr: 'чем ты занимаешься?', trans: ['chem ty zanimayeshsya?','que fais-tu ?'], type: 'phrase' },
-    { cyr: 'я учу английский', trans: ['ya uchu angliyskiy','j\'apprends l\'anglais'], type: 'phrase' },
-    { cyr: 'ты уже говоришь по-английски?', trans: ['ty uzhe govorish po-angliyski?','tu parles déjà l\'anglais ?'], type: 'phrase' },
-    { cyr: 'я немного говорю, но понимаю всё', trans: ['ya nemnogo govoryu, no ponimayu vsyo','je parle un peu, mais je comprends tout'], type: 'phrase' },
-    { cyr: 'ты знаешь французский?', trans: ['ty znayesh frantsuzskiy?','tu connais le français ?'], type: 'phrase' },
-    { cyr: 'конечно, я знаю', trans: ['konechno, ya znayu','bien sûr, je le connais'], type: 'phrase' },
-    { cyr: 'а как это сказать по-французски?', trans: ['a kak eto skazat po-frantsuzski?','et comment dit-on en français ?'], type: 'phrase' },
-    { cyr: 'по-французски это будет', trans: ['po-frantsuzski eto budet','en français, ça se dit'], type: 'phrase' },
-    { cyr: 'но это итальянский', trans: ['no eto italianskiy','mais c\'est de l\'italien'], type: 'phrase' },
-    { cyr: 'правда? тогда я знаю и итальянский', trans: ['pravda? togda ya znayu i italianskiy','c\'est vrai ? alors je connais aussi l\'italien'], type: 'phrase' },
-    { cyr: 'всё верно. до встречи', trans: ['vsyo verno. do vstrechi','tout à fait. à la prochaine'], type: 'phrase' },
-    { cyr: 'привет', trans: ['privet','salut'], type: 'phrase' },
-    { cyr: 'меня зовут Давид', trans: ['menya zovut David','je m\'appelle David'], type: 'phrase' },
-    { cyr: 'а вы?', trans: ['a vy?','et vous ?'], type: 'phrase' },
-    { cyr: 'меня зовут Наташа', trans: ['menya zovut Natacha','je m\'appelle Natacha'], type: 'phrase' },
-    { cyr: 'приятно познакомиться', trans: ['priyatno poznakomitsya','enchantée'], type: 'phrase' },
-    { cyr: 'какое красивое имя', trans: ['kakoye krasivoye imya','quel joli prénom'], type: 'phrase' },
-    { cyr: 'вы очень любезны', trans: ['vy ochen lyubezny','vous êtes très aimable'], type: 'phrase' },
-    { cyr: 'кстати, вот мой русский друг', trans: ['kstati, vot moy russkiy drug','à propos, voici mon ami russe'], type: 'phrase' },
-    { cyr: 'его зовут Вадим', trans: ['ego zovut Vadim','il s\'appelle Vadim'], type: 'phrase' },
-    { cyr: 'но я его знаю', trans: ['no ya ego znayu','mais je le connais'], type: 'phrase' },
-    { cyr: 'конечно, это известный актёр', trans: ['konechno, eto izvestnyy aktior','bien sûr, c\'est un acteur très connu'], type: 'phrase' },
-    { cyr: 'а вот мой друг, вы её знаете?', trans: ['a vot moy drug, vy yeye znayete?','et voici mon ami, vous la connaissez ?'], type: 'phrase' },
-    { cyr: 'нет, я её не знаю, к сожалению', trans: ['net, ya yeye ne znayu, k sozhaleniyu','non, je ne la connais pas, malheureusement'], type: 'phrase' },
-    { cyr: 'какая красивая девушка', trans: ['kakaya krasivaya devushka','quelle jolie fille'], type: 'phrase' },
-    { cyr: 'скажите, кто это?', trans: ['skazhite, kto eto?','dites-moi, qui est-ce ?'], type: 'phrase' },
-    { cyr: 'это мой брат', trans: ['eto moy brat','c\'est mon frère'], type: 'phrase' },
-    { cyr: 'правда? и чем он занимается?', trans: ['pravda? i chem on zanimayetsya?','c\'est vrai ? et que fait-il ?'], type: 'phrase' },
-    { cyr: 'он актёр', trans: ['on aktior','il est acteur'], type: 'phrase' },
-    { cyr: 'вы тоже работаете в театре?', trans: ['vy tozhe rabotayete v teatre?','vous travaillez aussi dans le théâtre ?'], type: 'phrase' },
-    { cyr: 'да, я тоже работаю в театре, но я режиссёр', trans: ['da, ya tozhe rabotayu v teatre, no ya rezhissyor','oui, je travaille aussi dans le théâtre, mais je suis metteur en scène'], type: 'phrase' },
-    { cyr: 'как интересно, мне очень нравится театр', trans: ['kak interesno, mne ochen nravitsya teatr','comme c\'est intéressant, j\'aime beaucoup le théâtre'], type: 'phrase' },
-    { cyr: 'а вы, где работаете?', trans: ['a vy, gde rabotayete?','et vous, où travaillez-vous ?'], type: 'phrase' },
-    { cyr: 'я журналист и работаю в газете', trans: ['ya zhurnalist i rabotayu v gazete','je suis journaliste et je travaille pour un journal'], type: 'phrase' },
-    { cyr: 'а где вы живёте?', trans: ['a gde vy zhivyote?','et où habitez-vous ?'], type: 'phrase' },
-    { cyr: 'я живу в Москве', trans: ['ya zhivu v Moskve','j\'habite Moscou'], type: 'phrase' },
-    { cyr: 'а я живу в Киеве', trans: ['a ya zhivu v Kieve','et moi, j\'habite à Kiev'], type: 'phrase' },
-    { cyr: 'а где живёт ваш брат?', trans: ['a gde zhivyot vash brat?','et où habite votre frère ?'], type: 'phrase' },
-    { cyr: 'он живёт в Одессе', trans: ['on zhivyot v Odesse','il habite à Odessa'], type: 'phrase' },
-    { cyr: 'о, это очень красивый город', trans: ['o, eto ochen krasivyy gorod','oh, c\'est une très jolie ville'], type: 'phrase' },
-];
-
-// ========================
-// Gestion des questions
-// ========================
+let russianLearning = [];  // tableau vide, on remplira avec fetch
 let currentItem = null;
 let scores = [];
 let answered = false;
-
 const actionButton = document.getElementById('actionButton');
 
 function nextQuestion() {
@@ -352,8 +56,8 @@ function checkAnswer() {
     const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
     if (!currentItem) return;
     const correctAnswers = currentItem.trans.map(a => a.toLowerCase());
-
     let score = 0;
+
     if (correctAnswers.includes(userAnswer)) {
         score = 20;
         document.getElementById('result').style.color = 'green';
@@ -362,10 +66,8 @@ function checkAnswer() {
         let bestPartial = 0;
         for (let ans of correctAnswers) {
             let matches = 0;
-            const len = Math.max(ans.length,userAnswer.length);
-            for(let i=0;i<len;i++){
-                if(userAnswer[i] && ans[i] && userAnswer[i]===ans[i]) matches++;
-            }
+            const len = Math.max(ans.length, userAnswer.length);
+            for(let i=0;i<len;i++){ if(userAnswer[i] && ans[i] && userAnswer[i]===ans[i]) matches++; }
             const partialScore = Math.round((matches/ans.length)*20);
             if(partialScore>bestPartial) bestPartial=partialScore;
         }
@@ -377,20 +79,15 @@ function checkAnswer() {
     const average = (sum/scores.length).toFixed(1);
     document.getElementById('score').textContent = `Note moyenne : ${average} / 20`;
 
-    if (score === 20) {
-    document.getElementById('result').textContent = `✅ Correct ! Bonne réponse : "${correctAnswers.join('" ou "')}"`;
-} else {
-    document.getElementById('result').textContent = `❌ Faux. Bonne réponse : "${correctAnswers.join('" ou "')}"`;
-}
+    document.getElementById('result').textContent = score===20 ? 
+        `✅ Correct ! Bonne réponse : "${correctAnswers.join('" ou "')}"` :
+        `❌ Faux. Bonne réponse : "${correctAnswers.join('" ou "')}"`;
 
     if(currentItem.type==='mot' && currentItem.genre){
         document.getElementById('info').textContent = `Genre : ${currentItem.genre==='m'?'masculin':currentItem.genre==='f'?'féminin':'neutre'}`;
     }
 }
 
-// ========================
-// Gestion du bouton unique
-// ========================
 actionButton.addEventListener('click', function() {
     if(!answered){
         checkAnswer();
@@ -401,14 +98,15 @@ actionButton.addEventListener('click', function() {
     }
 });
 
-// ========================
-// Lancement première question
-// ========================
-nextQuestion();
+// ======= Chargement du JSON =======
+fetch('list.json')
+    .then(response => response.json())
+    .then(data => {
+        russianLearning = data;
+        nextQuestion();  // lance la première question après chargement
+    })
+    .catch(err => console.error('Erreur chargement JSON :', err));
 </script>
 
 </body>
 </html>
-
-
-
